@@ -2,11 +2,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wall #-}
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-} -- temporary, pending ghc/ghci fix
-
--- {-# OPTIONS_GHC -fno-warn-unused-imports #-} -- TEMP
--- {-# OPTIONS_GHC -fno-warn-unused-binds   #-} -- TEMP
-
 ----------------------------------------------------------------------
 -- |
 -- Module      :  Data.FTree.BottomUp
@@ -80,6 +75,7 @@ inC2 :: (a -> b -> c)
      -> (forall n. (f :+^ n) a -> (f :+^ n) b -> (f :+^ n) c)
 inC2 l _ (L a ) (L b ) = L (l a  b )
 inC2 _ b (B as) (B bs) = B (b as bs)
+inC2 _ _ _ _ = error "inC2: unhandled case"  -- Possible??
 
 -- Similar to `inC`, but useful when we can know whether a `L` or a `B`:
 
