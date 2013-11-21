@@ -16,7 +16,7 @@
 -- See <http://conal.net/blog/posts/a-trie-for-length-typed-vectors/>.
 ----------------------------------------------------------------------
 
-module Data.FTree.TopDown (T(..),(:^),unL,unB,foldT,inC,inC2,inL,inB,inL2,inB2) where
+module Data.FTree.TopDown (T(..),(:^),unL,unB,foldT,inT,inT2,inL,inB,inL2,inB2) where
 
 -- TODO: explicit exports
 
@@ -67,20 +67,20 @@ foldT l b = fo
 
 -- Operate inside the representation of `f :^ n`:
 
-inC :: (a -> b)
+inT :: (a -> b)
     -> (forall n. IsNat n => f ((f :^ n) a) -> f ((f :^ n) b))
     -> (forall n. (f :^ n) a -> (f :^ n) b)
-inC l _ (L a ) = (L (l a ))
-inC _ b (B as) = (B (b as))
+inT l _ (L a ) = (L (l a ))
+inT _ b (B as) = (B (b as))
 
-inC2 :: (a -> b -> c)
+inT2 :: (a -> b -> c)
      -> (forall n. IsNat n => f ((f :^ n) a) -> f ((f :^ n) b) -> f ((f :^ n) c))
      -> (forall n. (f :^ n) a -> (f :^ n) b -> (f :^ n) c)
-inC2 l _ (L a ) (L b ) = L (l a  b )
-inC2 _ b (B as) (B bs) = B (b as bs)
-inC2 _ _ _ _ = error "inC2: unhandled case"  -- Possible??
+inT2 l _ (L a ) (L b ) = L (l a  b )
+inT2 _ b (B as) (B bs) = B (b as bs)
+inT2 _ _ _ _ = error "inT2: unhandled case"  -- Possible??
 
--- Similar to `inC`, but useful when we can know whether a `L` or a `B`:
+-- Similar to `inT`, but useful when we can know whether a `L` or a `B`:
 
 inL :: (a -> b)
         -> ((f :^ Z) a -> (f :^ Z) b)
@@ -110,11 +110,11 @@ instance ShowF f => ShowF (f :^ n) where
 -- The following definitions arise from the standard instances for binary functor composition.
 
 instance Functor f => Functor (f :^ n) where
-  fmap h = inC h ((fmap.fmap) h)
+  fmap h = inT h ((fmap.fmap) h)
 
 instance (IsNat n, Applicative f) => Applicative (f :^ n) where
   pure = pureN nat
-  (<*>) = inC2 ($) (liftA2 (<*>))
+  (<*>) = inT2 ($) (liftA2 (<*>))
 
 pureN :: Applicative f => Nat n -> a -> (f :^ n) a
 pureN Zero     a = L a
