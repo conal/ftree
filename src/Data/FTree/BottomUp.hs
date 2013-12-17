@@ -83,19 +83,19 @@ inT2 _ _ _ _ = error "inT2: unhandled case"  -- Possible??
 -- Similar to `inT`, but useful when we can know whether a `L` or a `B`:
 
 inL :: (a -> b)
-        -> ((f :^ Z) a -> (f :^ Z) b)
+    -> ((f :^ Z) a -> (f :^ Z) b)
 inL h (L a ) = L (h a )
 
 inB :: ((f :^ n) (f a) -> (f :^ n) (f b))
-        -> ((f :^ (S n)) a -> (f :^ (S n)) b)
+    -> ((f :^ (S n)) a -> (f :^ (S n)) b)
 inB h (B as) = B (h as)
 
 inL2 :: (a -> b -> c)
-         -> ((f :^ Z) a -> (f :^ Z) b -> (f :^ Z) c)
+     -> ((f :^ Z) a -> (f :^ Z) b -> (f :^ Z) c)
 inL2 h (L a ) (L b ) = L (h a  b )
 
 inB2 :: ((f :^ n) (f a) -> (f :^ n) (f b) -> (f :^ n) (f c))
-         -> ((f :^ (S n)) a -> (f :^ (S n)) b -> (f :^ (S n)) c)
+     -> ((f :^ (S n)) a -> (f :^ (S n)) b -> (f :^ (S n)) c)
 inB2 h (B as) (B bs) = B (h as bs)
 
 
