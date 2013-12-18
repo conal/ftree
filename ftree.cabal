@@ -1,5 +1,5 @@
 Name:                ftree
-Version:             0.1.3
+Version:             0.1.4
 Cabal-Version:       >= 1.6
 Synopsis:            Depth-typed functor-based trees, both top-down and bottom-up
 Category:            Data
