@@ -17,7 +17,7 @@
 ----------------------------------------------------------------------
 
 module Data.FTree.BottomUp
-  ( T(..),(:^),unL,unB,foldT,inT,inT2,inT',inT2',inL,inB,inL2,inB2
+  ( T(..),(:^),unL,unB,foldT,inT,inT2,inL,inB,inL2,inB2
   ) where
 
 -- TODO: explicit exports
@@ -85,23 +85,6 @@ inT2 :: (a -> b -> c)
 inT2 l _ (L a ) (L b ) = L (l a  b )
 inT2 _ b (B as) (B bs) = B (b as bs)
 inT2 _ _ _ _ = error "inT2: unhandled case"  -- Possible??
-
--- More general version that doesn't assume we're creating another (bottom-up) tree
-
--- | Operate inside the representation of `f :^ n`.
-inT' :: (a -> b)
-     -> (forall n. IsNat n => (f :^ n) (f a) -> b)
-     -> (forall n.            (f :^ n)    a  -> b)
-inT' l _ (L a ) = l a 
-inT' _ b (B as) = b as
-
--- | Operate inside the representation of two `f :^ n`.
-inT2' :: (a -> b -> c)
-      -> (forall n. IsNat n => (f :^ n) (f a) -> (f :^ n) (f b) -> c)
-      -> (forall n.            (f :^ n)    a  -> (f :^ n)    b  -> c)
-inT2' l _ (L a ) (L b ) = l a  b
-inT2' _ b (B as) (B bs) = b as bs
-inT2' _ _ _ _ = error "inT2': unhandled case"  -- Possible??
 
 
 -- Similar to `inT`, but useful when we can know whether a `L` or a `B`:
