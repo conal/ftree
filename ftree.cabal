@@ -25,4 +25,4 @@ Library
   Exposed-Modules:     
                        Data.FTree.TopDown
                        Data.FTree.BottomUp
-  ghc-options:         -Wall
+  ghc-options:         -Wall -O2
