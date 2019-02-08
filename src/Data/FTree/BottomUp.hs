@@ -1,6 +1,7 @@
 {-# LANGUAGE GADTs, KindSignatures, TypeOperators, Rank2Types, DataKinds #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -Wall #-}
 
 ----------------------------------------------------------------------
@@ -166,7 +167,9 @@ instance (IsNat n, Applicative f, Sem.Semigroup m) => Sem.Semigroup (( f :^ n) m
 
 instance (IsNat n, Applicative f, Monoid m) => Monoid ((f :^ n) m) where
   mempty  = pure mempty
---  mappend = liftA2 mappend
+#if !(MIN_VERSION_base(4,11,0))
+  mappend = liftA2 mappend
+#endif
 
 -- (To follow the general pattern exactly, replace the first two constraints with `Applicative (f :^ n)` and add `FlexibleContexts` to the module's `LANGUAGE` pragma.)
 
