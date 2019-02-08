@@ -27,7 +27,8 @@ import Prelude hiding (and)
 import Control.Applicative (Applicative(..),liftA2,(<$>))
 import Data.Foldable (Foldable(..),and)
 import Data.Traversable (Traversable(..))
-import Data.Monoid (Monoid(..))
+--import Data.Monoid (Monoid(..))
+import qualified Data.Semigroup as Sem
 
 import TypeUnary.Nat
 
@@ -84,7 +85,6 @@ inT2 :: (a -> b -> c)
      -> (forall n. (f :^ n) a -> (f :^ n) b -> (f :^ n) c)
 inT2 l _ (L a ) (L b ) = L (l a  b )
 inT2 _ b (B as) (B bs) = B (b as bs)
-inT2 _ _ _ _ = error "inT2: unhandled case"  -- Possible??
 
 
 -- Similar to `inT`, but useful when we can know whether a `L` or a `B`:
@@ -151,7 +151,7 @@ instance (Functor f, Foldable f) => Foldable (f :^ n) where
 
 instance Traversable f => Traversable (f :^ n) where
   sequenceA (L qa) = L <$> qa
-  sequenceA (B as) = fmap B . sequenceA . fmap sequenceA $ as
+  sequenceA (B as) = B <$> traverse sequenceA as
 
 -- i.e.,
 
@@ -161,9 +161,12 @@ instance Traversable f => Traversable (f :^ n) where
 
 -- We can use the `Applicative` instance in standard way to get a `Monoid` instance:
 
+instance (IsNat n, Applicative f, Sem.Semigroup m) => Sem.Semigroup (( f :^ n) m) where
+  (<>) = liftA2 (Sem.<>)
+
 instance (IsNat n, Applicative f, Monoid m) => Monoid ((f :^ n) m) where
   mempty  = pure mempty
-  mappend = liftA2 mappend
+--  mappend = liftA2 mappend
 
 -- (To follow the general pattern exactly, replace the first two constraints with `Applicative (f :^ n)` and add `FlexibleContexts` to the module's `LANGUAGE` pragma.)
 
